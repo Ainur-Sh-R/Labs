@@ -1,9 +1,6 @@
 package application;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +11,6 @@ public class ReadFromFile {
     private static String sourcesFile = "src\\res\\Sources.txt";
     private static String wordsFile = "src\\res\\Words.txt";
     public static final String resultFile = "src\\res\\ResultOfSearch.txt";
-
 
     /**
      * @return массив адресов ресурсов
@@ -79,4 +75,39 @@ public class ReadFromFile {
     public static void setWordsFile(String wordsFile) {
         ReadFromFile.wordsFile = wordsFile;
     }
+
+
+    /**
+     * записывает имена файлов из массива в файл "sourcesFile"
+     * @param fieldName путь к папке с файлами
+     */
+    public static void writeToSourcesFile(String fieldName) {
+        String[] strings = getFileNames(fieldName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(ReadFromFile.sourcesFile)))) {
+            for (String string : strings) {
+                writer.write(string + "\n");
+                writer.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @param fieldName путь к папке с файлами
+     * @return массив имен файлов
+     */
+    private static String[] getFileNames(String fieldName) {
+        File folder = new File(fieldName);
+        File[] listOfFiles = folder.listFiles();
+        List<String> results = new ArrayList<>();
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                results.add(fieldName + listOfFiles[i].getName());
+            }
+        }
+        return results.toArray(new String[0]);
+    }
+
 }
